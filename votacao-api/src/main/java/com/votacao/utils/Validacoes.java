@@ -4,6 +4,7 @@ import com.votacao.model.Votacao;
 import com.votacao.repository.VotacaoRepository;
 import com.votacao.repository.VotoRepository;
 import com.votacao.requests.PautaRequests;
+import com.votacao.requests.ValidarCpfRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -12,14 +13,17 @@ import org.springframework.stereotype.Component;
 public class Validacoes {
 
     private final PautaRequests pautaRequests;
+    private final ValidarCpfRequest validarCpfRequest;
     private final VotacaoRepository votacaoRepository;
     private final VotoRepository votoRepository;
 
     @Autowired
-    public Validacoes(PautaRequests pautaRequests, VotacaoRepository votacaoRepository, VotoRepository votoRepository) {
+    public Validacoes(PautaRequests pautaRequests, VotacaoRepository votacaoRepository, VotoRepository votoRepository,
+                      ValidarCpfRequest validarCpfRequest) {
         this.pautaRequests = pautaRequests;
         this.votacaoRepository = votacaoRepository;
         this.votoRepository = votoRepository;
+        this.validarCpfRequest = validarCpfRequest;
     }
 
     public void validarExistenciaPauta(Long pautaId) {
@@ -28,6 +32,13 @@ public class Validacoes {
         if(response == HttpStatus.NOT_FOUND.value())
             throw new IllegalArgumentException(String.format("Não existe uma pauta com o id %s",
                     pautaId));
+    }
+
+    public void validarCpf(String cpf) {
+        Integer response = validarCpfRequest.validarCpf(cpf);
+
+        if(response == HttpStatus.NOT_FOUND.value())
+            throw new IllegalArgumentException(String.format("Cpf $s inválido", cpf));
     }
 
     public void validarPautaEstaEmVotacao(Long pautaId) {

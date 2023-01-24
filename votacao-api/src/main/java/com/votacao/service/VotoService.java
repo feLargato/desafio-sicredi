@@ -33,6 +33,7 @@ public class VotoService {
     }
 
     public void validarVoto(Voto voto) {
+        validador.validarCpf(voto.getCpf());
         Long pautaId = voto.getPautaId();
         validador.validarExistenciaPauta(pautaId);
         validador.validarPautaEstaEmVotacao(pautaId);
