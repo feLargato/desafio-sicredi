@@ -19,6 +19,6 @@ public class VotoController {
 
     @PostMapping
     private Voto votar(@RequestBody Voto voto) {
-        return votoService.votar(voto);
+        return votoService.registrarVoto(voto);
     }
 }

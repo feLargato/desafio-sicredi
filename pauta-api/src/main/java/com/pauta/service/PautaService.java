@@ -13,8 +13,13 @@ import java.util.Optional;
 @Service
 public class PautaService {
 
+
+    private final PautaRepository pautaRepository;
+
     @Autowired
-    private PautaRepository pautaRepository;
+    public PautaService(PautaRepository pautaRepository) {
+        this.pautaRepository = pautaRepository;
+    }
 
     public Pauta addPauta(Pauta pauta) {
         return pautaRepository.save(pauta);
@@ -37,7 +42,7 @@ public class PautaService {
     }
 
     @KafkaListener(topics = "resultado.votacao", groupId = "votacao")
-    public void recebeResultado(String message) {
+    public void receberResultado(String message) {
         System.out.println(message);
     }
 }

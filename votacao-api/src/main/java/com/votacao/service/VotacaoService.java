@@ -44,22 +44,22 @@ public class VotacaoService {
 
     private Votacao abrirVotacao(Votacao votacao) {
         votacao.abrirVotacao();
-         return votacaoRepository.save(votacao);
+        return votacaoRepository.save(votacao);
     }
 
     private void programarEncerramentoVotacao(Votacao votacao) {
         executor.schedule(() -> {
-            encerraVotacao(votacao);
-            ResultadoVotacao resultadoVotacao = contabilizaResultado(votacao);
-            publicaResultado(resultadoVotacao);
+            encerrarVotacao(votacao);
+            ResultadoVotacao resultadoVotacao = contabilizarResultado(votacao);
+            publicarResultado(resultadoVotacao);
         }, votacao.getDuracao(), TimeUnit.MINUTES);
     }
 
-    public void encerraVotacao(Votacao votacao) {
+    public void encerrarVotacao(Votacao votacao) {
         votacao.encerrarVotacao();
         votacaoRepository.save(votacao);
     }
-    public ResultadoVotacao contabilizaResultado(Votacao votacao) {
+    public ResultadoVotacao contabilizarResultado(Votacao votacao) {
         List<Voto> votos = votoRepository.findAllByPautaId(votacao.getPautaId());
         ResultadoVotacao resultadoVotacao = new ResultadoVotacao();
         if(votos.isEmpty()) {
@@ -71,7 +71,7 @@ public class VotacaoService {
 
     }
 
-    public void publicaResultado(ResultadoVotacao resultadoVotacao) {
+    public void publicarResultado(ResultadoVotacao resultadoVotacao) {
         String message;
         if(resultadoVotacao.getVotosContabilizados() == null) {
             message = resultadoVotacao.getResultado();
