@@ -10,9 +10,8 @@ public class ValidadorController {
 
 	@Autowired
 	private ValidadorService associadoService;
-	@Autowired
 
-	@GetMapping()
+	@GetMapping("{cpf}")
 	private Integer verificarCpf(@PathVariable String cpf) {
 		return associadoService.validarCpf(cpf);
 	}
