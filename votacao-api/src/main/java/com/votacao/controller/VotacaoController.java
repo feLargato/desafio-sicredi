@@ -12,7 +12,11 @@ import java.util.List;
 public class VotacaoController {
 
     @Autowired
-    private VotacaoService votacaoService;
+    private final VotacaoService votacaoService;
+
+    public VotacaoController(VotacaoService votacaoService) {
+        this.votacaoService = votacaoService;
+    }
 
     @PostMapping
     private Votacao configurarVotacao(@RequestBody  Votacao votacao) {

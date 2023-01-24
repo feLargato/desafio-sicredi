@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 
 @Data
@@ -31,8 +32,6 @@ public class Votacao {
     public void encerrarVotacao() {
         setStatusVotacao(StatusVotacao.FECHADO);
     }
-
-
 
 
 }

@@ -11,5 +11,7 @@ import java.util.Optional;
 public interface VotacaoRepository extends MongoRepository<Votacao, String> {
 
     Votacao findByPautaId(Long pautaId);
+    Boolean existsByPautaId(Long pautaId);
 
+    Boolean existsByPautaIdAndStatusVotacao(Long pautaId, StatusVotacao fechado);
 }

@@ -3,7 +3,6 @@ package com.pauta.controller;
 import com.pauta.model.Pauta;
 import com.pauta.service.PautaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public class PautaController {
     }
 
     @GetMapping("{pautaId}")
-    private HttpStatus validaExistenciaPauta(@PathVariable Long pautaId) {
+    private int validaExistenciaPauta(@PathVariable Long pautaId) {
         return pautaService.verificaExistênciaPauta(pautaId);
     }
 

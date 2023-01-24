@@ -23,14 +23,14 @@ public class PautaService {
         return pautaRepository.findAll();
     }
 
-    public HttpStatus verificaExistênciaPauta(Long id) {
+    public int verificaExistênciaPauta(Long id) {
         Optional<Pauta> pauta = pautaRepository.findById(id);
 
         if(pauta.isEmpty()) {
-            return HttpStatus.NOT_FOUND;
+            return HttpStatus.NOT_FOUND.value();
         }
         else {
-            return HttpStatus.FOUND;
+            return HttpStatus.FOUND.value();
         }
 
     }

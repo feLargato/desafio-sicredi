@@ -3,11 +3,12 @@ package com.votacao.service;
 import com.votacao.model.Votacao;
 import com.votacao.repository.VotacaoRepository;
 import com.votacao.requests.PautaRequests;
+import com.votacao.utils.Validacoes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -16,13 +17,13 @@ import java.util.concurrent.TimeUnit;
 public class VotacaoService {
 
     private final VotacaoRepository votacaoRepository;
-    private final PautaRequests pautaRequests;
     private ScheduledExecutorService executor;
+    private final Validacoes validador;
 
     @Autowired
-    public VotacaoService(VotacaoRepository votacaoRepository, PautaRequests pautaRequests) {
+    public VotacaoService(VotacaoRepository votacaoRepository, Validacoes validacoes) {
         this.votacaoRepository = votacaoRepository;
-        this.pautaRequests = pautaRequests;
+        this.validador = validacoes;
         this.executor = Executors.newScheduledThreadPool(1);
     }
 
@@ -46,13 +47,8 @@ public class VotacaoService {
     }
 
     public void validarAbertura(Votacao votacao) {
-        Votacao votacaoPersistida = votacaoRepository.findByPautaId(votacao.getPautaId());
-
-        if(votacaoPersistida != null)
-          throw new IllegalArgumentException(String.format("Já existe uma votação com o status %s para essa pauta",
-               votacaoPersistida.getStatusVotacao()));
-
-        pautaRequests.getPautas(votacao.getPautaId());
+        validador.validarExistenciaPauta(votacao.getPautaId());
+        validador.validarExistenciaVotacao(votacao);
     }
 
     public List<Votacao> getVotacoes() {
