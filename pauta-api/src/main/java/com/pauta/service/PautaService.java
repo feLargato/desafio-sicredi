@@ -4,6 +4,7 @@ import com.pauta.model.Pauta;
 import com.pauta.repository.PautaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,5 +34,10 @@ public class PautaService {
             return HttpStatus.FOUND.value();
         }
 
+    }
+
+    @KafkaListener(topics = "resultado.votacao", groupId = "votacao")
+    public void recebeResultado(String message) {
+        System.out.println(message);
     }
 }

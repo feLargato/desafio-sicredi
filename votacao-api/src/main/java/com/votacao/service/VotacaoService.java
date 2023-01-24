@@ -1,11 +1,13 @@
 package com.votacao.service;
 
+import com.votacao.model.ResultadoVotacao;
 import com.votacao.model.Votacao;
+import com.votacao.model.Voto;
 import com.votacao.repository.VotacaoRepository;
-import com.votacao.requests.PautaRequests;
+import com.votacao.repository.VotoRepository;
 import com.votacao.utils.Validacoes;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,14 +19,20 @@ import java.util.concurrent.TimeUnit;
 public class VotacaoService {
 
     private final VotacaoRepository votacaoRepository;
+    private final VotoRepository votoRepository;
     private ScheduledExecutorService executor;
     private final Validacoes validador;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Autowired
-    public VotacaoService(VotacaoRepository votacaoRepository, Validacoes validacoes) {
+    public VotacaoService(VotacaoRepository votacaoRepository, VotoRepository votoRepository,
+                          Validacoes validacoes,
+                          KafkaTemplate kafkaTemplate) {
         this.votacaoRepository = votacaoRepository;
+        this.votoRepository = votoRepository;
         this.validador = validacoes;
         this.executor = Executors.newScheduledThreadPool(1);
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     public Votacao configurarVotacao(Votacao votacao) {
@@ -41,9 +49,45 @@ public class VotacaoService {
 
     private void programarEncerramentoVotacao(Votacao votacao) {
         executor.schedule(() -> {
-            votacao.encerrarVotacao();
-            votacaoRepository.save(votacao);
+            encerraVotacao(votacao);
+            ResultadoVotacao resultadoVotacao = contabilizaResultado(votacao);
+            publicaResultado(resultadoVotacao);
         }, votacao.getDuracao(), TimeUnit.MINUTES);
+    }
+
+    public void encerraVotacao(Votacao votacao) {
+        votacao.encerrarVotacao();
+        votacaoRepository.save(votacao);
+    }
+    public ResultadoVotacao contabilizaResultado(Votacao votacao) {
+        List<Voto> votos = votoRepository.findAllByPautaId(votacao.getPautaId());
+        ResultadoVotacao resultadoVotacao = new ResultadoVotacao();
+        if(votos.isEmpty()) {
+            resultadoVotacao.setResultado("A pauta não recebeu nenhum voto");
+            return  resultadoVotacao;
+        }
+
+        return resultadoVotacao.contabilizarResultado(votos);
+
+    }
+
+    public void publicaResultado(ResultadoVotacao resultadoVotacao) {
+        String message;
+        if(resultadoVotacao.getVotosContabilizados() == null) {
+            message = resultadoVotacao.getResultado();
+        }
+        else {
+           message = String.format("Votação para a pauta %s encerrada. \n" +
+                           "Votos Contabilizados: %s \n" +
+                           "Votos SIM: %s \n" +
+                           "Votos NAO: %s \n." +
+                           resultadoVotacao.getResultado(),
+                   resultadoVotacao.getPautaId(), resultadoVotacao.getVotosContabilizados(),
+                   resultadoVotacao.getVotosSim(), resultadoVotacao.getVotosNao());
+        }
+
+        kafkaTemplate.send("resultado.votacao", message);
+        System.out.println("Mensagem enviada \n" + message);
     }
 
     public void validarAbertura(Votacao votacao) {
