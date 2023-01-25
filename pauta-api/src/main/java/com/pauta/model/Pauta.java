@@ -17,4 +17,8 @@ public class Pauta {
     @Column
     private String pauta;
 
+    public Pauta (String pauta) {
+        this.pauta = pauta;
+    }
+
 }
