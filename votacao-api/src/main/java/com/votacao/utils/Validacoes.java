@@ -38,7 +38,7 @@ public class Validacoes {
         Integer response = validarCpfRequest.validarCpf(cpf);
 
         if(response == HttpStatus.NOT_FOUND.value())
-            throw new IllegalArgumentException(String.format("Cpf $s inválido", cpf));
+            throw new IllegalArgumentException(String.format("Cpf %s inválido", cpf));
     }
 
     public void validarPautaEstaEmVotacao(Long pautaId) {
