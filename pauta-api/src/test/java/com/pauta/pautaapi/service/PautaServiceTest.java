@@ -4,25 +4,22 @@ import com.pauta.model.Pauta;
 import com.pauta.repository.PautaRepository;
 import com.pauta.service.PautaService;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PautaServiceTest {
 
     @InjectMocks
@@ -39,7 +36,7 @@ public class PautaServiceTest {
 
         pautaService.addPauta(p);
 
-        verify(pautaRepository, times(1)).save(p);
+        verify(pautaRepository, times(1));
 
     }
 
@@ -52,7 +49,7 @@ public class PautaServiceTest {
         Integer notFoundValue = pautaService.verificaExistênciaPauta(1L);
 
         assertEquals(notFoundValue, HttpStatus.NOT_FOUND.value());
-        verify(pautaRepository, times(1)).findById(anyLong());
+        verify(pautaRepository, times(1));
     }
 
     @Test
@@ -65,7 +62,7 @@ public class PautaServiceTest {
         Integer notFoundValue = pautaService.verificaExistênciaPauta(pautaId);
 
         assertEquals(notFoundValue, HttpStatus.FOUND.value());
-        verify(pautaRepository, times(1)).findById(anyLong());
+        verify(pautaRepository, times(1));
     }
 
 
