@@ -3,6 +3,7 @@ package com.votacao.controller;
 import com.votacao.model.Voto;
 import com.votacao.service.VotoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,9 +17,8 @@ public class VotoController {
         this.votoService = votoService;
     }
 
-
     @PostMapping
-    private Voto votar(@RequestBody Voto voto) {
+    private ResponseEntity<?> votar(@RequestBody Voto voto) {
         return votoService.registrarVoto(voto);
     }
 }

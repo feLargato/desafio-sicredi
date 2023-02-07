@@ -3,6 +3,7 @@ package com.votacao.model;
 import com.votacao.utils.StatusVoto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 

@@ -3,6 +3,7 @@ package com.votacao.controller;
 import com.votacao.model.Votacao;
 import com.votacao.service.VotacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class VotacaoController {
     }
 
     @PostMapping
-    private Votacao configurarVotacao(@RequestBody  Votacao votacao) {
+    private ResponseEntity<?> configurarVotacao(@RequestBody  Votacao votacao) {
         return votacaoService.configurarVotacao(votacao);
     }
 

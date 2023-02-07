@@ -33,5 +33,8 @@ public class Votacao {
         setStatusVotacao(StatusVotacao.FECHADO);
     }
 
+    public void setDefault() {
+        this.duracao = 1;
+    }
 
 }

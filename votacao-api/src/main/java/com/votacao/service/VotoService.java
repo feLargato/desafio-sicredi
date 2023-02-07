@@ -6,6 +6,8 @@ import com.votacao.repository.VotacaoRepository;
 import com.votacao.repository.VotoRepository;
 import com.votacao.utils.Validacoes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -25,16 +27,18 @@ public class VotoService {
 
     }
 
-    public Voto registrarVoto(Voto voto) {
+    public ResponseEntity<?> registrarVoto(Voto voto) {
         validarVoto(voto);
         Votacao votacao = votacaoRepository.findByPautaId(voto.getPautaId());
         voto.setVotacao(votacao);
-        return votoRepository.save(voto);
+        Voto votoValido = votoRepository.save(voto);
+        return new ResponseEntity<>(votoValido, HttpStatus.CREATED);
     }
 
     public void validarVoto(Voto voto) {
-        validador.validarCpf(voto.getCpf());
         Long pautaId = voto.getPautaId();
+        validador.validarCpf(voto.getCpf());
+        validador.validarOpcaoDeVoto(voto.getOpcaoDeVoto());
         validador.validarExistenciaPauta(pautaId);
         validador.validarPautaEstaEmVotacao(pautaId);
         validador.validarVotacaoAbertaParaVoto(pautaId);

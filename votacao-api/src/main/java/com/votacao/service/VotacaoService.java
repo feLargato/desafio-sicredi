@@ -1,12 +1,16 @@
 package com.votacao.service;
 
+import com.google.gson.Gson;
 import com.votacao.model.ResultadoVotacao;
 import com.votacao.model.Votacao;
 import com.votacao.model.Voto;
 import com.votacao.repository.VotacaoRepository;
 import com.votacao.repository.VotoRepository;
 import com.votacao.utils.Validacoes;
+import io.swagger.models.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -35,11 +39,11 @@ public class VotacaoService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public Votacao configurarVotacao(Votacao votacao) {
+    public ResponseEntity<?> configurarVotacao(Votacao votacao) {
         validarAbertura(votacao);
         Votacao votacaoAberta  = abrirVotacao(votacao);
         programarEncerramentoVotacao(votacaoAberta);
-        return votacaoAberta;
+        return new ResponseEntity<>(votacaoAberta, HttpStatus.CREATED);
     }
 
     private Votacao abrirVotacao(Votacao votacao) {
@@ -72,25 +76,15 @@ public class VotacaoService {
     }
 
     public void publicarResultado(ResultadoVotacao resultadoVotacao) {
-        String message;
-        if(resultadoVotacao.getVotosContabilizados() == null) {
-            message = resultadoVotacao.getResultado();
-        }
-        else {
-           message = String.format("Votação para a pauta %s encerrada. \n" +
-                           "Votos Contabilizados: %s \n" +
-                           "Votos SIM: %s \n" +
-                           "Votos NAO: %s \n." +
-                           resultadoVotacao.getResultado(),
-                   resultadoVotacao.getPautaId(), resultadoVotacao.getVotosContabilizados(),
-                   resultadoVotacao.getVotosSim(), resultadoVotacao.getVotosNao());
-        }
+
+        String message = new Gson().toJson(resultadoVotacao);
 
         kafkaTemplate.send("resultado.votacao", message);
         System.out.println("Mensagem enviada \n" + message);
     }
 
     public void validarAbertura(Votacao votacao) {
+        validador.validarDuracao(votacao);
         validador.validarExistenciaPauta(votacao.getPautaId());
         validador.validarExistenciaVotacao(votacao);
     }

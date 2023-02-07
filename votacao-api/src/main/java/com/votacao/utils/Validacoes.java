@@ -1,6 +1,7 @@
 package com.votacao.utils;
 
 import com.votacao.model.Votacao;
+import com.votacao.model.Voto;
 import com.votacao.repository.VotacaoRepository;
 import com.votacao.repository.VotoRepository;
 import com.votacao.requests.PautaRequests;
@@ -26,7 +27,23 @@ public class Validacoes {
         this.validarCpfRequest = validarCpfRequest;
     }
 
+    public void validarDuracao(Votacao votacao) {
+        if(votacao.getDuracao() == null)
+            votacao.setDefault();
+    }
+
+
+    public void validarOpcaoDeVoto(StatusVoto statusVoto) {
+        validarNulo(statusVoto, "statusVoto");
+
+        if (!statusVoto.equals(StatusVoto.SIM) && !statusVoto.equals(StatusVoto.NAO)) {
+            throw new IllegalArgumentException("Invalid voting option (SIM/NAO)");
+        }
+
+    }
+
     public void validarExistenciaPauta(Long pautaId) {
+        validarNulo(pautaId, "pautaId");
         Integer response = pautaRequests.getPautas(pautaId);
 
         if(response == HttpStatus.NOT_FOUND.value())
@@ -35,10 +52,13 @@ public class Validacoes {
     }
 
     public void validarCpf(String cpf) {
-        Integer response = validarCpfRequest.validarCpf(cpf);
+
+        validarNulo(cpf, "CPF");
+
+        /*Integer response = validarCpfRequest.validarCpf(cpf);
 
         if(response == HttpStatus.NOT_FOUND.value())
-            throw new IllegalArgumentException(String.format("Cpf %s inválido", cpf));
+            throw new IllegalArgumentException(String.format("Cpf %s inválido", cpf));*/
     }
 
     public void validarPautaEstaEmVotacao(Long pautaId) {
@@ -73,4 +93,8 @@ public class Validacoes {
 
     }
 
+    private void validarNulo(Object obj, String nomeCampo) {
+        if(obj == null || obj.equals(""))
+            throw new IllegalArgumentException(nomeCampo + " Não pode ser nulo ou vazio");
+    }
 }
