@@ -3,6 +3,7 @@ package com.votacao.service;
 import com.votacao.controller.VotacaoController;
 import com.votacao.model.Votacao;
 import com.votacao.model.Voto;
+import com.votacao.model.dto.VotoDTO;
 import com.votacao.repository.VotacaoRepository;
 import com.votacao.repository.VotoRepository;
 import com.votacao.utils.Validacoes;
@@ -31,12 +32,15 @@ public class VotoService {
 
     }
 
-    public ResponseEntity<?> registrarVoto(Voto voto) {
+    public ResponseEntity<?> registrarVoto(VotoDTO votoDTO) {
+        Voto voto = new Voto(votoDTO);
         validarVoto(voto);
+
         Votacao votacao = votacaoRepository.findByPautaId(voto.getPautaId());
         voto.setVotacao(votacao);
-        Voto votoValido = votoRepository.save(voto);
 
+        Voto votoValido = votoRepository.save(voto);
+        LOGGER.info("Voto registrado" + voto);
         return new ResponseEntity<>(votoValido, HttpStatus.CREATED);
     }
 

@@ -1,5 +1,6 @@
 package com.votacao.model;
 
+import com.votacao.model.dto.VotacaoDTO;
 import com.votacao.utils.StatusVotacao;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -7,11 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Timer;
 
 @Data
+@NoArgsConstructor
 @Document(collection = "votacao")
 public class Votacao {
 
@@ -22,6 +21,11 @@ public class Votacao {
     private Integer duracao;
     private LocalDateTime iniciaEm;
     private LocalDateTime terminaEm;
+
+    public Votacao(VotacaoDTO votacaoDTO) {
+        this.duracao = votacaoDTO.getDuracao();
+        this.pautaId = votacaoDTO.getPautaId();
+    }
 
     public void abrirVotacao() {
         setStatusVotacao(StatusVotacao.ABERTO);

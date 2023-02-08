@@ -5,6 +5,7 @@ import com.votacao.controller.VotacaoController;
 import com.votacao.model.ResultadoVotacao;
 import com.votacao.model.Votacao;
 import com.votacao.model.Voto;
+import com.votacao.model.dto.VotacaoDTO;
 import com.votacao.repository.VotacaoRepository;
 import com.votacao.repository.VotoRepository;
 import com.votacao.utils.Validacoes;
@@ -31,7 +32,6 @@ public class VotacaoService {
     private ScheduledExecutorService executor;
     private final Validacoes validador;
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private Logger ;
 
     @Autowired
     public VotacaoService(VotacaoRepository votacaoRepository, VotoRepository votoRepository,
@@ -44,7 +44,8 @@ public class VotacaoService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public ResponseEntity<?> configurarVotacao(Votacao votacao) {
+    public ResponseEntity<?> configurarVotacao(VotacaoDTO votacaoDTO) {
+        Votacao votacao = new Votacao(votacaoDTO);
         validarAbertura(votacao);
         Votacao votacaoAberta  = abrirVotacao(votacao);
         programarEncerramentoVotacao(votacaoAberta);

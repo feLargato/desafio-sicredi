@@ -1,6 +1,6 @@
 package com.votacao.controller;
 
-import com.votacao.model.Voto;
+import com.votacao.model.dto.VotoDTO;
 import com.votacao.service.VotoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +22,8 @@ public class VotoController {
     }
 
     @PostMapping
-    private ResponseEntity<?> votar(@RequestBody Voto voto) {
+    private ResponseEntity<?> votar(@RequestBody VotoDTO votoDTO) {
         LOGGER.info("Recebendo requisição para realização de voto");
-        return votoService.registrarVoto(voto);
+        return votoService.registrarVoto(votoDTO);
     }
 }

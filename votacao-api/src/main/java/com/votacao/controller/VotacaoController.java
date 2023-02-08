@@ -1,6 +1,7 @@
 package com.votacao.controller;
 
 import com.votacao.model.Votacao;
+import com.votacao.model.dto.VotacaoDTO;
 import com.votacao.service.VotacaoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +25,9 @@ public class VotacaoController {
     }
 
     @PostMapping
-    private ResponseEntity<?> configurarVotacao(@RequestBody  Votacao votacao) {
-        LOGGER.info("Recebida requisição para configurar uma votação para a pauta:" + votacao.getPautaId());
-        return votacaoService.configurarVotacao(votacao);
+    private ResponseEntity<?> configurarVotacao(@RequestBody VotacaoDTO votacaoDTO) {
+        LOGGER.info("Recebida requisição para configurar uma votação para a pauta:" + votacaoDTO.getPautaId());
+        return votacaoService.configurarVotacao(votacaoDTO);
     }
 
     @GetMapping

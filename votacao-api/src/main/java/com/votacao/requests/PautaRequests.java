@@ -14,7 +14,7 @@ public class PautaRequests {
 
         UriComponents uri = UriComponentsBuilder.newInstance()
                 .scheme("http")
-                .host("localhost:8081")
+                .host("ec2-54-167-182-124.compute-1.amazonaws.com:8081")
                 .path("pauta/" + id.toString())
                 .build();
 
