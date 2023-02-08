@@ -15,12 +15,12 @@ public class ResultadoVotacao {
     private Long votosNao;
     private Long votosContabilizados;
     private String resultado;
-    private String pautaId;
+    private Long pautaId;
 
 
     public ResultadoVotacao contabilizarResultado(List<Voto> votos) {
         this.votosContabilizados = votos.stream().count();
-        this.pautaId = votos.get(0).getPautaId().toString();
+        this.pautaId = votos.get(0).getPautaId();
         this.votosSim = votos.stream().filter( v -> v.getOpcaoDeVoto() == StatusVoto.SIM).count();
         this.votosNao = votos.stream().filter( v -> v.getOpcaoDeVoto() == StatusVoto.NAO).count();
         if(votosSim > votosNao) {

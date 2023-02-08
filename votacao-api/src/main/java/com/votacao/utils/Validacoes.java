@@ -55,9 +55,9 @@ public class Validacoes {
 
         validarNulo(cpf, "CPF");
 
-        /*Integer response = validarCpfRequest.validarCpf(cpf);
+        //Integer response = validarCpfRequest.validarCpf(cpf);
 
-        if(response == HttpStatus.NOT_FOUND.value())
+        /*if(response == HttpStatus.NOT_FOUND.value())
             throw new IllegalArgumentException(String.format("Cpf %s inválido", cpf));*/
     }
 
