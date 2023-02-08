@@ -1,6 +1,7 @@
 package com.votacao.service;
 
 import com.google.gson.Gson;
+import com.votacao.controller.VotacaoController;
 import com.votacao.model.ResultadoVotacao;
 import com.votacao.model.Votacao;
 import com.votacao.model.Voto;
@@ -8,6 +9,8 @@ import com.votacao.repository.VotacaoRepository;
 import com.votacao.repository.VotoRepository;
 import com.votacao.utils.Validacoes;
 import io.swagger.models.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +25,13 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class VotacaoService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(VotacaoController.class);
     private final VotacaoRepository votacaoRepository;
     private final VotoRepository votoRepository;
     private ScheduledExecutorService executor;
     private final Validacoes validador;
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private Logger ;
 
     @Autowired
     public VotacaoService(VotacaoRepository votacaoRepository, VotoRepository votoRepository,
@@ -47,11 +52,24 @@ public class VotacaoService {
     }
 
     private Votacao abrirVotacao(Votacao votacao) {
-        votacao.abrirVotacao();
-        return votacaoRepository.save(votacao);
+        try {
+            LOGGER.info("Abrindo votação: " + votacao);
+            votacao.abrirVotacao();
+
+            Votacao votacaoAberta = votacaoRepository.save(votacao);
+            LOGGER.info("Votacao aberta:" + votacaoAberta);
+
+            return votacaoAberta;
+        }
+        catch (Exception e) {
+            LOGGER.error("Ocorreu um erro ao abrir a votacao: " + votacao);
+            return null;
+        }
     }
 
     private void programarEncerramentoVotacao(Votacao votacao) {
+        LOGGER.info(String.format("Votacao %s programada para encerrar em %s",
+                votacao.getId(), votacao.getTerminaEm()));
         executor.schedule(() -> {
             encerrarVotacao(votacao);
             ResultadoVotacao resultadoVotacao = contabilizarResultado(votacao);
@@ -62,12 +80,16 @@ public class VotacaoService {
     public void encerrarVotacao(Votacao votacao) {
         votacao.encerrarVotacao();
         votacaoRepository.save(votacao);
+        LOGGER.info(String.format("Votacao %s encerrada", votacao.getId()));
     }
     public ResultadoVotacao contabilizarResultado(Votacao votacao) {
+        LOGGER.info("Contabilizando resultados da votacao");
         List<Voto> votos = votoRepository.findAllByPautaId(votacao.getPautaId());
         ResultadoVotacao resultadoVotacao = new ResultadoVotacao();
         if(votos.isEmpty()) {
-            resultadoVotacao.setResultado("A pauta não recebeu nenhum voto");
+            String message = "A pauta não recebeu nenhum voto";
+            LOGGER.info(message);
+            resultadoVotacao.setResultado(message);
             return  resultadoVotacao;
         }
 
@@ -76,17 +98,19 @@ public class VotacaoService {
     }
 
     public void publicarResultado(ResultadoVotacao resultadoVotacao) {
-
+        LOGGER.info("Publicando resultados da votação");
         String message = new Gson().toJson(resultadoVotacao);
 
         kafkaTemplate.send("resultado.votacao", message);
-        System.out.println("Mensagem enviada \n" + message);
+        LOGGER.info("resultado \n " + message);;
     }
 
     public void validarAbertura(Votacao votacao) {
+        LOGGER.info("Validando dados para a abertura da votação");
         validador.validarDuracao(votacao);
         validador.validarExistenciaPauta(votacao.getPautaId());
         validador.validarExistenciaVotacao(votacao);
+        LOGGER.info("Dados para abertura da votação OK");
     }
 
     public List<Votacao> getVotacoes() {
