@@ -61,13 +61,17 @@ public class Validacoes {
     }
 
     public void validarCpf(String cpf) {
-
+        LOGGER.info("Validando campo CPF");
         validarNulo(cpf, "CPF");
 
-        //Integer response = validarCpfRequest.validarCpf(cpf);
+        Integer response = validarCpfRequest.validarCpf(cpf);
 
-        /*if(response == HttpStatus.NOT_FOUND.value())
-            throw new IllegalArgumentException(String.format("Cpf %s inválido", cpf));*/
+        if(response == HttpStatus.NOT_FOUND.value()) {
+            String message = String.format("Cpf %s inválido", cpf);
+            LOGGER.error(message);
+            throw new IllegalArgumentException(message);
+        }
+        LOGGER.info(String.format("Cpf %s é válido", cpf));
     }
 
     public void validarPautaEstaEmVotacao(Long pautaId) {

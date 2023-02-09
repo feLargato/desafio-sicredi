@@ -14,7 +14,7 @@ public class ValidarCpfRequest {
 
         UriComponents uri = UriComponentsBuilder.newInstance()
                 .scheme("http")
-                .host("localhost:8080")
+                .host("ec2-54-167-182-124.compute-1.amazonaws.com:8080")
                 .path("validarCpf/" + cpf)
                 .build();
 
