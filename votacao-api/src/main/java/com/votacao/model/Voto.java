@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "voto")
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Voto {
 
