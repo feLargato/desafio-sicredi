@@ -1,4 +1,17 @@
 
+# Desafio Sicredi
+
+Esse repositório contém o desenvolvimento do desafio proposto pela NTConsult.
+O objetivo desse projeto é gerenciar sessões de votação, cadastrando pautas, abrido sessões de votação para as pautas cadastradas e votar nas sessões abertas. 
+
+
+
+
+## Stack utilizada
+
+Java 11, Spring boot, Apache kafka, mongoDb, oracle database, maven, mockito.
+
+
 ## Exemplo de uso
 
 1. Crie uma pauta:
@@ -106,3 +119,37 @@
   "resultado": "A pauta foi reprovada"
 }
 ```
+## Instalação
+
+1. Para instalar o projeto você precisa instalar na sua máquina:
+ - Maven
+ - JDK 11.0.11
+ - Oracle Database 21c Express Edition
+ - MongoDB v5.0.5
+ - Kafka_2.13-2.6.0
+2. Clone o repositório para a sua máquina local: 
+```
+https://github.com/feLargato/desafio-sicredi.git
+```
+3. Inicie os serviços do Apache Kafka e do MongoDB.
+4. Nas classes KafkaProducer e KafkaConsumer, na votacao-api e pauta-api respectivamente, edite as strings de conexão para conectar no seu serviço local do apache kafka.
+5. Edite as strings de conexão do arquivo application.properties dos projetos votacao-api e pauta-api para conectar no seu banco de dados local.
+6. Na pasta raiz de cada projeto compile o código usando o seguinte comando: 
+```
+mvn clean package
+```
+7. Execute o seguinte comando na pasta raiz de cada projeto para iniciar a aplicação:
+```
+java -jar target/nome-do-arquivo.jar
+```
+Substitua "nome_do_arquivo.jar" pelo nome do arquivo gerado no passo 6.
+
+8. você pode encontrar a documentação das apis nos links:
+- http://localhost:8080/swagger-ui.html para associado-api.
+- http://localhost:8081/swagger-ui.html para pauta-api
+- http://localhost:8082/swagger-ui.html para votacao-api
+9. Pronto! Agora você pode começar a usar as apis. Qualquer dificuldade na Instalação por favor entre em contato pelo email lfrsantos05@gmail.com 
+
+
+
+    
