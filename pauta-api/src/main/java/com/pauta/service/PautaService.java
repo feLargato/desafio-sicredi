@@ -8,7 +8,6 @@ import com.pauta.repository.PautaRepository;
 import com.pauta.repository.ResultadoVotacaoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -25,13 +24,12 @@ public class PautaService {
     private final PautaRepository pautaRepository;
     private final ResultadoVotacaoRepository resultadoVotacaoRepository;
 
-    @Autowired
     public PautaService(PautaRepository pautaRepository, ResultadoVotacaoRepository resultadoVotacaoRepository) {
         this.pautaRepository = pautaRepository;
         this.resultadoVotacaoRepository = resultadoVotacaoRepository;
     }
 
-    public Pauta addPauta(Pauta pauta) {
+    public ResponseEntity<?> addPauta(Pauta pauta) {
         try{
             pautaRepository.save(pauta);
             LOGGER.info("A pauta foi cadastrada:" + pauta);
@@ -39,7 +37,7 @@ public class PautaService {
         catch (Exception e) {
             LOGGER.error("Ocorrreu um erro ao cadastrar a pauta: " + e.getMessage());
         }
-        return pauta;
+        return new ResponseEntity<>(pauta, HttpStatus.CREATED);
 
     }
 
@@ -84,7 +82,7 @@ public class PautaService {
 
         try{
             ResultadoVotacao resultadoSalvo = resultadoVotacaoRepository.save(resultadoVotacao);
-            LOGGER.info("O resultado da votação foi persistido: " + resultadoSalvo.toString());
+            LOGGER.info("O resultado da votação foi persistido: " + resultadoSalvo);
         }
         catch (Exception e) {
             LOGGER.error("Erro ao persistir resultado da votação: " + e.getMessage());

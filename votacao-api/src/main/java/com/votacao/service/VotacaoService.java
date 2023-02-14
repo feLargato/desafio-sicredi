@@ -33,7 +33,6 @@ public class VotacaoService {
     private final Validacoes validador;
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    @Autowired
     public VotacaoService(VotacaoRepository votacaoRepository, VotoRepository votoRepository,
                           Validacoes validacoes,
                           KafkaTemplate kafkaTemplate) {
