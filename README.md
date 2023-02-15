@@ -15,9 +15,10 @@ Java 11, Spring boot, Apache kafka, mongoDb, oracle database, maven, mockito.
 ## Exemplo de uso
 
 1. Crie uma pauta:
-| Método |   URL   |
+
+| Método | URL | 
 |--------|----------|
-| POST   | http://localhost:8081/pautas  |  
+| POST | http://localhost:8081/pautas |
 
 - Request body
 ```
@@ -33,6 +34,7 @@ Java 11, Spring boot, Apache kafka, mongoDb, oracle database, maven, mockito.
 }
 ```
 2. Listar todas as pautas:
+
 | Método |   URL   |
 |--------|----------|
 | GET    | http://localhost:8081/pautas  |  
@@ -46,6 +48,7 @@ Java 11, Spring boot, Apache kafka, mongoDb, oracle database, maven, mockito.
 ]
 ```
 3. Abrir votação:
+
 | Método |   URL   |
 |--------|----------|
 | POST   | http://localhost:8082/votacoes| 
@@ -68,6 +71,7 @@ Java 11, Spring boot, Apache kafka, mongoDb, oracle database, maven, mockito.
 }
 ```
 4. Listar todas as votações:
+
 | Método |   URL   |
 |--------|----------|
 | GET    | http://localhost:8082/votacoes| 
@@ -85,6 +89,7 @@ Java 11, Spring boot, Apache kafka, mongoDb, oracle database, maven, mockito.
 ]
 ```
 4. Votar: 
+
 | Método |   URL   |
 |--------|----------|
 | POST   | http://localhost:8082/votos/votar   |
@@ -105,7 +110,8 @@ Java 11, Spring boot, Apache kafka, mongoDb, oracle database, maven, mockito.
     "opcaoDeVoto": "SIM"
 }
 ```
-5. Consultar o resultado da votação
+5. Consultar o resultado da votação:
+
 | Método |   URL   |
 |--------|----------|
 | GET   | http://localhots:8081/pautas/resultado/{pautaId}   |
